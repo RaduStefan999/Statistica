@@ -110,3 +110,128 @@ server_request_timp_val = server_request_timp();
 print(server_request_timp_val);
 
 #B5
+
+#infection probability p
+p = 0.1
+#number of chosen computers
+k = 12
+#probability of clean computer
+q = 0.9
+
+#subpunctul a
+
+SYS_Infectare = function(nr_infecte)
+{
+  nr_curate = 20 - nr_infecte;
+  
+  for (i in 1:nr_infecte)
+  {
+    for (j in 1:nr_curate)
+    {
+      chanse = runif(1, 0, 1);
+      
+      if (chanse <= p)
+      {
+        nr_infecte = nr_infecte + 1;
+        nr_curate = nr_curate - 1;
+      }
+    }
+  }
+  
+  return(nr_infecte);
+}
+
+SYS_Curatare = function(nr_infecte)
+{
+  nr_of_cleaning_computers = min(nr_infecte, k)
+  
+  for (i in 1:nr_of_cleaning_computers)
+  {
+    chanse = runif(1, 0, 1);
+    
+    if (chanse < q)
+    {
+      nr_infecte = nr_infecte - 1
+    }
+  }
+  
+  return(nr_infecte);
+}
+
+
+SYS_situation_nr_zile = function()
+{
+  day = 1;
+  nr_infecte = 3
+  
+  while (nr_infecte != 0)
+  {
+    day = day + 1;
+    
+    nr_infecte = SYS_Infectare(nr_infecte);
+    nr_infecte = SYS_Curatare(nr_infecte);
+    
+    if (nr_infecte == 20) return -1;
+  }
+  
+  return(day);
+}
+
+SYS_MonteCarlo=function(nr)
+{
+  sum=0
+  for(i in 1:nr)
+  {
+    sum=sum+SYS_situation_nr_zile()
+  }
+  return(sum/nr)
+}
+
+print(SYS_MonteCarlo(500))
+
+#subpunctul b
+
+SYS_situation_10_zile = function()
+{
+  nr_infecte = 3
+  
+  for (i in 2:10)
+  {
+    nr_infecte = SYS_Infectare(nr_infecte);
+    nr_infecte = SYS_Curatare(nr_infecte);
+  }
+  
+  if (nr_infecte == 0)
+  {
+    return(1);
+  }
+  else
+  {
+    return(0);
+  }
+}
+
+SYS_MonteCarlo_10_zile=function(nr)
+{
+  sum=0
+  for(i in 1:nr)
+  {
+    sum=sum+SYS_situation_10_zile()
+  }
+  return(sum/nr)
+}
+
+print(SYS_MonteCarlo_10_zile(500))
+
+#subpunctul c
+
+alfa=1-0.95
+z=qnorm(alfa/2)
+epsilon=0.01
+p=0.706
+N_min=(1/4)*(z/epsilon)^2
+N_min
+SYS_MonteCarlo_10_zile(N_min+1)
+
+
+

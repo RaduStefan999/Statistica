@@ -22,8 +22,14 @@ volum_elipsoid = function(a, b, c, D)
 sfera_statistica = volum_elipsoid(3, 2, 4, 50000);
 sfera_reala = ((4*pi*3*2*4)/3);
 
+absolute_error = abs(sfera_reala - sfera_statistica);
+relative_error = absolute_error/sfera_reala;
+
 print(sfera_statistica);
 print(sfera_reala);
+
+print(absolute_error);
+print(relative_error);
 
 #B2
 #[0,2]*[0,4/3]
@@ -221,17 +227,48 @@ SYS_MonteCarlo_10_zile=function(nr)
   return(sum/nr)
 }
 
-print(SYS_MonteCarlo_10_zile(500))
+print(SYS_MonteCarlo_10_zile(5000))
 
 #subpunctul c
 
-alfa=1-0.95
-z=qnorm(alfa/2)
-epsilon=0.01
-p=0.706
-N_min=(1/4)*(z/epsilon)^2
-N_min
-SYS_MonteCarlo_10_zile(N_min+1)
+
+p=0.676
+
+e_mai_mic_95 = function()
+{
+  nr = 0;
+  
+  for (i in 1:10)
+  {
+    if (abs(p - SYS_MonteCarlo_10_zile(5)) < 0.1)
+    {
+      nr = nr + 1;
+    }
+  }
+  
+  prob = nr/10
+  
+  if (pro >= 0.95)
+  {
+    return(1)
+  }else
+  {
+    return(0)
+  }
+}
+
+numar = 0
+
+for (i in 1:100)
+{
+  numar = numar + e_mai_mic_95()
+}
+
+numar = numar/100
+
+print(numar)
+
+
 
 
 
